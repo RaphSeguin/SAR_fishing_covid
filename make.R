@@ -52,6 +52,7 @@ ZEE <- sf::st_read("maps/eez_v11.shp") %>% filter(SOVEREIGN1 == "France")
 shipping_routes = raster("maps/shipping.tif")
 
 #Intersection between our data and SAR data
+#This takes a while
 SAR_data_ZEE = ZEE_intersection(data_SAR,ZEE)
 
 #Cleaning up data
@@ -72,6 +73,7 @@ sep_year(SAR_data_final)
 #Data in data frame format
 SAR_data_final_df = st_coordinates(SAR_data_final)
 SAR_data_final_df = cbind(SAR_data_final_df,SAR_data_final_df)
+save(SAR_data_final_df, file = "outputs/SAR_data_final_df.Rdata")
 
 #------Figures----------
 
@@ -85,96 +87,17 @@ setwd(path)
 files <- list.files(here::here("output"),pattern = ".Rdata")
 data_list = lapply(files, load, .GlobalEnv)
 
-
 setwd(here())
 
 #Figure of study area
 study_area(map_background, ZEE)
 
 #Figure of the number of images per year and per month 
+number_of_images(SAR_data_final)
 
+#Number of observations per year, per month and per day boxplot
+number_of_observations(SAR_data_final,SAR_data_2017,SAR_data_2018,SAR_data_2019,SAR_data_2020)
 
-
-#How did the number of images vary ? 
-
-#Number of images per year
-ggplot(data_final,aes(Year,ImgYear)) +
-  geom_point(size = 4,aes(color=Year)) +
-  theme_minimal()+
-  scale_color_viridis_d() +
-  labs(x = "Year",
-       y = "Number of images taken")+
-  ylim(0,600)
-
-ggsave(file="figures/ImagesPerYear.png",width = 297, height = 210,units="mm")
-ggsave(file="figures/ImagesPerYear.pdf",width = 297, height = 210,units="mm")
-
-#Number of images per month
-ggplot(data_final,aes(Month,ImgMonth)) +
-  geom_point(size = 4,aes(color=Year)) +
-  theme_minimal()+
-  scale_color_viridis_d() +
-  labs(x = "Month",
-       y = "Number of images taken") + 
-  facet_wrap(~Year) +
-  ylim(0,80)
-
-ggsave(file="figures/ImagesPerMonth.pdf",width = 297, height = 210,units="mm")
-ggsave(file="figures/ImagesPerMonth.png",width = 297, height = 210,units="mm")
-
-#Let's check the data for the years 2017 and 2018 
-
-
-
-
-#NUMBER OF OBSERVATIONS PER MONTH BAR CHART
-(pMonth_2017 = ggplot(data_2017, aes(Month,fill=Month)) +
-  geom_bar()+
-  scale_fill_viridis_d() +
-  theme_minimal()+
-  labs(x = "Month",
-       y = "Number of observations",
-       title = "2017") +
-    ylim(0,7000)+
-    guides(fill = "none"))
-
-(pMonth_2018 = ggplot(data_2018, aes(Month,fill=Month)) +
-  geom_bar()+
-  scale_fill_viridis_d() +
-  theme_minimal()+
-  labs(x = "Month",
-       y = "Number of observations",
-       title = "2018") +
-    ylim(0,7000)+guides(fill = "none"))
-
-#NUMBER OF OBSERVATIONS PER MONTH BAR CHART
-(pMonth_2019 = ggplot(data_2019, aes(Month,fill=Month)) +
-    geom_bar()+
-    scale_fill_viridis_d() +
-    theme_minimal()+
-    labs(x = "Month",
-         y = "Number of observations",
-         title = "2019") +
-    ylim(0,7000)+guides(fill = "none"))
-
-(pMonth_2020 = ggplot(data_2020, aes(Month,fill=Month)) +
-    geom_bar()+
-    scale_fill_viridis_d() +
-    theme_minimal()+
-    labs(x = "Month",
-         y = "Number of observations",
-         title = "2020") +
-    ylim(0,7000)+guides(fill = "none"))
-
-(pMonth = ggarrange(pMonth_2017,pMonth_2018,pMonth_2019,pMonth_2020,common.legend = T,nrow=2,ncol=2))
-
-ggsave(pMonth,file='figures/frequentationmonth.pdf',width = 20, height = 15) 
-ggsave(pMonth,file='figures/frequentationmonth.png',width = 20, height = 15) 
-
-#Trying out something
-
-
-full = rbind(data_2017,data_2018,data_2019,data_2020)
 
 
 #MEAN PER YEAR

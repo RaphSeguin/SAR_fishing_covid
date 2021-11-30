@@ -4,7 +4,7 @@
 #' @param map_background Background map of Med
 #' @param ZEE dataset of french ZEE
 #' 
-#' @return In the figures/RFI folder, plot from every image
+#' @return In the figures/RFI folder, plot from the study
 #'
 #' @export
 #' 
