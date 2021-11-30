@@ -11,7 +11,7 @@
 #-----------------Loading packages-------------------
 
 pkgs <- c("tidyverse","here","lme4","broom","tidymodels","parallel","cowplot","sf","RColorBrewer","ggridges","plotly","heatmaply","parsedate","birk",
-          "harrypotter","wesanderson","ranger","ggpubr","data.table","xml2","XML","rnaturalearth","ggExtra","raster","exactextractr","gstat","magrittr","scales")
+          "harrypotter","wesanderson","ranger","ggpubr","data.table","xml2","XML","rnaturalearth","ggExtra","raster","exactextractr","gstat","magrittr","scales","grid","gridExtra")
 nip <- pkgs[!(pkgs %in% installed.packages())]
 nip <- lapply(nip, install.packages, dependencies = TRUE)
 ip   <- unlist(lapply(pkgs, require, character.only = TRUE, quietly = TRUE))
@@ -73,7 +73,7 @@ sep_year(SAR_data_final)
 #Data in data frame format
 SAR_data_final_df = st_coordinates(SAR_data_final)
 SAR_data_final_df = cbind(SAR_data_final_df,SAR_data_final_df)
-save(SAR_data_final_df, file = "outputs/SAR_data_final_df.Rdata")
+save(SAR_data_final_df, file = "output/SAR_data_final_df.Rdata")
 
 #------Figures----------
 
