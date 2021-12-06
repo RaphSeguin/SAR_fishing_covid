@@ -125,7 +125,11 @@ number_of_images(SAR_data_final)
 #Number of observations per year, per month and per day boxplot
 number_of_observations(SAR_data_final,SAR_data_2017,SAR_data_2018,SAR_data_2019,SAR_data_2020)
 
+#Number of images we lose due to shippinh
+shipping_plot(SAR_data_noRFI)
 
+#Example of RFI images
+RFI_plot(SAR_data_clean)
 
 #MEAN PER YEAR
 plot_year = data_final %>%
