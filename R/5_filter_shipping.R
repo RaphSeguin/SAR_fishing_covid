@@ -21,9 +21,7 @@ filter_shipping = function(SAR_data_noRFI){
   
   SAR_data_final = SAR_data_final %>%
     filter(!ObsImg > quantile(SAR_data_noRFI$ObsImg,0.99))
-  
-  
-  save(SAR_data_final, file = "output/SAR_data_final.Rdata")
+
   
   return(SAR_data_final)
   

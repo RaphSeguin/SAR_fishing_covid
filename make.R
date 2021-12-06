@@ -67,6 +67,33 @@ SAR_data_noRFI = filter_RFI(SAR_data_clean)
 #Delete Shipping routes
 SAR_data_final = filter_shipping(SAR_data_noRFI)
 
+#ADDING CYCLE PARAMETER IN OUR DATA
+SAR_data_final_plot = SAR_data_final %>%
+  distinct(Day, .keep_all = T) %>%
+  st_drop_geometry() %>%
+  arrange(Day)
+
+
+SAR_data_final_plot$Day = as.POSIXct(SAR_data_final_plot$Day, format = "%Y-%m-%d")
+SAR_data_final_plot$difftime = NA
+for(i in 1:nrow(SAR_data_final_plot)){
+  
+  SAR_data_final_plot$difftime[i] = abs(round(difftime(SAR_data_final_plot[1,55],SAR_data_final_plot[i,55], units = c("days"))))
+  
+}
+
+
+SAR_data_final_plot = SAR_data_final_plot %>%
+  mutate(cycle = as.factor(ifelse(difftime%%12 == 0, paste0(Day),NA))) %>%
+  dplyr::select(image_name, cycle, difftime)
+
+SAR_data_final = SAR_data_final %>%
+  left_join(SAR_data_final_plot, by = "image_name") %>%
+  arrange(Day) %>%
+  fill(cycle)
+  
+save(SAR_data_final, file = "output/SAR_data_final.Rdata")
+
 #Save one data set per year
 sep_year(SAR_data_final)
 
