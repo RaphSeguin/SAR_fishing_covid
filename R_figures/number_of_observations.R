@@ -7,7 +7,7 @@
 #' @export
 #' 
 
-number_of_images = function(SAR_data_final, SAR_data_2017, SAR_data_2018, SAR_data_2019, SAR_data_2020){
+number_of_observations = function(SAR_data_final, SAR_data_2017, SAR_data_2018, SAR_data_2019, SAR_data_2020){
   
   #Number of observations per year
   (pYear = ggplot(SAR_data_final, aes(Year, fill = Year)) + 
@@ -59,74 +59,26 @@ number_of_images = function(SAR_data_final, SAR_data_2017, SAR_data_2018, SAR_da
       ylim(0,7000)+guides(fill = "none"))
   
   
-  # #Number of observations per day 
-  # (pDay_2017 = ggplot(SAR_data_2017, aes(Month, ObsDay, fill = Year)) +
-  #   geom_boxplot(alpha = 0.5)+
-  #   geom_jitter(aes(color = Month), alpha = 0.4, size = 2, shape = ".")+
-  #   scale_fill_manual(values = group.colors) + 
-  #   scale_color_manual(values = group.colors) + 
-  #   theme_minimal()+
-  #   theme(axis.text.x = element_text(angle = 75, vjust = 0.5, hjust=0.5)) +
-  #   labs(x = " ",
-  #        y = "Number of observations per day") +
-  #   guides(fill = "none",color="none") +
-  #   ylim(0, 800))
-  # 
-  # (pDay_2018 = ggplot(SAR_data_2018, aes(Month, ObsDay, fill = Year)) +
-  #     geom_boxplot(alpha = 0.5)+
-  #     geom_jitter(aes(color = Month), alpha = 0.4, size = 2, shape = ".")+
-  #     scale_fill_manual(values = group.colors) + 
-  #     scale_color_manual(values = group.colors) + 
-  #     theme_minimal()+
-  #     theme(axis.text.x = element_text(angle = 75, vjust = 0.5, hjust=0.5)) +
-  #     labs(x = " ",
-  #          y = "Number of observations per day") +
-  #     guides(fill = "none",color="none") +
-  #     ylim(0, 800))
-  # 
-  # (pDay_2019 = ggplot(SAR_data_2019, aes(Month, ObsDay, fill = Year)) +
-  #     geom_boxplot(alpha = 0.5)+
-  #     geom_jitter(aes(color = Month), alpha = 0.4, size = 2, shape = ".")+
-  #     scale_fill_manual(values = group.colors) + 
-  #     scale_color_manual(values = group.colors) + 
-  #     theme_minimal()+
-  #     theme(axis.text.x = element_text(angle = 75, vjust = 0.5, hjust=0.5)) +
-  #     labs(x = " ",
-  #          y = "Number of observations per day") +
-  #     guides(fill = "none",color="none") +
-  #     ylim(0, 800))
-  # 
-  # (pDay_2020 = ggplot(SAR_data_2020, aes(Month, ObsDay, fill = Year)) +
-  #     geom_boxplot(alpha = 0.5)+
-  #     geom_jitter(aes(color = Month), alpha = 0.4, size = 2, shape = ".")+
-  #     scale_fill_manual(values = group.colors) + 
-  #     scale_color_manual(values = group.colors) + 
-  #     theme_minimal()+
-  #     theme(axis.text.x = element_text(angle = 75, vjust = 0.5, hjust=0.5)) +
-  #     labs(x = " ",
-  #          y = "Number of observations per day") +
-  #     guides(fill = "none",color="none") +
-  #     ylim(0, 800))
-  # 
-  #Number of observations per cycle
+  #Number of observations per day
   (pDay_2017 = SAR_data_2017 %>%
-      distinct(ObsCycle, .keep_all = T) %>%
-      ggplot(aes(Month, ObsCycle, fill = Year)) +
-      geom_boxplot(alpha = 0.5)+
-      scale_fill_manual(values = group.colors) + 
-      scale_color_manual(values = group.colors) + 
-      theme_minimal()+
-      theme(axis.text.x = element_text(angle = 75, vjust = 0.5, hjust=0.5)) +
-      labs(x = " ",
-           y = "Number of observations per day") +
-      guides(fill = "none",color="none")+
-     ylim(0, 2600))
+    distinct(ObsDay, .keep_all = T) %>%
+    ggplot(aes(Month, ObsDay, fill = Year)) +
+    geom_boxplot(alpha = 0.5)+
+    geom_jitter(colour = "black", fill = "#440154", shape=21, alpha = 0.4, size = 2)+
+    scale_fill_manual(values = group.colors) +
+    scale_color_manual(values = group.colors) +
+    theme_minimal()+
+    theme(axis.text.x = element_text(angle = 75, vjust = 0.5, hjust=0.5)) +
+    labs(x = " ",
+         y = "Number of observations per day") +
+    guides(fill = "none",color="none") +
+    ylim(0, 800))
 
-  
-  (pDay_2018 = SAR_data_2018 %>% 
-      distinct(ObsCycle, .keep_all = T) %>%
-      ggplot(aes(Month, ObsCycle, fill = Year)) +
+  (pDay_2018 = SAR_data_2018 %>%
+      distinct(ObsDay, .keep_all = T) %>%
+      ggplot(aes(Month, ObsDay, fill = Year)) +
       geom_boxplot(alpha = 0.5)+
+      geom_jitter(color = "black", fill = "#31688e", shape = 21, alpha = 0.4, size = 2)+
       scale_fill_manual(values = group.colors) +
       scale_color_manual(values = group.colors) +
       theme_minimal()+
@@ -134,12 +86,14 @@ number_of_images = function(SAR_data_final, SAR_data_2017, SAR_data_2018, SAR_da
       labs(x = " ",
            y = "Number of observations per day") +
       guides(fill = "none",color="none") +
-      ylim(0, 2600))
+      ylim(0, 800))
 
-  (pDay_2019 = SAR_data_2019 %>% 
-      distinct(ObsCycle, .keep_all = T) %>%
-      ggplot(aes(Month, ObsCycle, fill = Year)) +
+  (pDay_2019 =
+      SAR_data_2019 %>%
+      distinct(ObsDay, .keep_all = T) %>%
+      ggplot(aes(Month, ObsDay, fill = Year)) +
       geom_boxplot(alpha = 0.5)+
+      geom_jitter(color =  "black", fill = "#35b779" , shape = 21, alpha = 0.4, size = 2)+
       scale_fill_manual(values = group.colors) +
       scale_color_manual(values = group.colors) +
       theme_minimal()+
@@ -147,13 +101,13 @@ number_of_images = function(SAR_data_final, SAR_data_2017, SAR_data_2018, SAR_da
       labs(x = " ",
            y = "Number of observations per day") +
       guides(fill = "none",color="none") +
-      ylim(0, 2600))
-  
+      ylim(0, 800))
 
   (pDay_2020 = SAR_data_2020 %>%
-      distinct(ObsCycle, .keep_all = T) %>%
-      ggplot(aes(Month, ObsCycle, fill = Year)) +
+      distinct(ObsDay, .keep_all = T) %>%
+      ggplot(aes(Month, ObsDay, fill = Year)) +
       geom_boxplot(alpha = 0.5)+
+      geom_jitter(fill = "#fde725", colour = "black", shape=21,  alpha = 0.4, size = 2)+
       scale_fill_manual(values = group.colors) +
       scale_color_manual(values = group.colors) +
       theme_minimal()+
@@ -161,7 +115,62 @@ number_of_images = function(SAR_data_final, SAR_data_2017, SAR_data_2018, SAR_da
       labs(x = " ",
            y = "Number of observations per day") +
       guides(fill = "none",color="none") +
-      ylim(0, 2600))
+      ylim(0, 800))
+  # 
+  #Number of observations per cycle
+  # (pDay_2017 = SAR_data_2017 %>%
+  #     distinct(ObsCycle, .keep_all = T) %>%
+  #     ggplot(aes(Month, ObsCycle, fill = Year)) +
+  #     geom_boxplot(alpha = 0.5)+
+  #     scale_fill_manual(values = group.colors) + 
+  #     scale_color_manual(values = group.colors) + 
+  #     theme_minimal()+
+  #     theme(axis.text.x = element_text(angle = 75, vjust = 0.5, hjust=0.5)) +
+  #     labs(x = " ",
+  #          y = "Number of observations per day") +
+  #     guides(fill = "none",color="none")+
+  #    ylim(0, 2600))
+  # 
+  # 
+  # (pDay_2018 = SAR_data_2018 %>% 
+  #     distinct(ObsCycle, .keep_all = T) %>%
+  #     ggplot(aes(Month, ObsCycle, fill = Year)) +
+  #     geom_boxplot(alpha = 0.5)+
+  #     scale_fill_manual(values = group.colors) +
+  #     scale_color_manual(values = group.colors) +
+  #     theme_minimal()+
+  #     theme(axis.text.x = element_text(angle = 75, vjust = 0.5, hjust=0.5)) +
+  #     labs(x = " ",
+  #          y = "Number of observations per day") +
+  #     guides(fill = "none",color="none") +
+  #     ylim(0, 2600))
+  # 
+  # (pDay_2019 = SAR_data_2019 %>% 
+  #     distinct(ObsCycle, .keep_all = T) %>%
+  #     ggplot(aes(Month, ObsCycle, fill = Year)) +
+  #     geom_boxplot(alpha = 0.5)+
+  #     scale_fill_manual(values = group.colors) +
+  #     scale_color_manual(values = group.colors) +
+  #     theme_minimal()+
+  #     theme(axis.text.x = element_text(angle = 75, vjust = 0.5, hjust=0.5)) +
+  #     labs(x = " ",
+  #          y = "Number of observations per day") +
+  #     guides(fill = "none",color="none") +
+  #     ylim(0, 2600))
+  # 
+  # 
+  # (pDay_2020 = SAR_data_2020 %>%
+  #     distinct(ObsCycle, .keep_all = T) %>%
+  #     ggplot(aes(Month, ObsCycle, fill = Year)) +
+  #     geom_boxplot(alpha = 0.5)+
+  #     scale_fill_manual(values = group.colors) +
+  #     scale_color_manual(values = group.colors) +
+  #     theme_minimal()+
+  #     theme(axis.text.x = element_text(angle = 75, vjust = 0.5, hjust=0.5)) +
+  #     labs(x = " ",
+  #          y = "Number of observations per day") +
+  #     guides(fill = "none",color="none") +
+  #     ylim(0, 2600))
 
   
   month = ggarrange(pMonth_2017 + rremove("ylab"), pMonth_2018 + rremove("ylab"), pMonth_2019 + rremove("ylab"), pMonth_2020 + rremove("ylab"), nrow = 1)
