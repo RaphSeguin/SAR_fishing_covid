@@ -42,16 +42,9 @@ data_clean = function(SAR_data_ZEE){
     group_by(Day) %>%
     mutate(ObsDay = n()) %>%
     ungroup() %>%
-    #Number of observations per image
-    group_by(detecttime) %>%
-    mutate(ObsImg  = n()) %>%
-    ungroup() %>%
     filter(Month != "February") %>%
     filter(Year != 2016) %>%
     filter(Year != 2021)
-  
-  #Remove outliers by deleting all days where number of observations is greater than 95% of observed values
-  SAR_data_clean = SAR_data_clean %>% filter(ObsDay < quantile(SAR_data_clean$ObsDay,0.95))
   
   SAR_data_clean$Month = factor(SAR_data_clean$Month,levels = c("March","April","May","June","July","August","September","October","November"))
   SAR_data_clean$MonthNum = as.Date(paste0("2017-",SAR_data_clean$MonthNum,"-01"))

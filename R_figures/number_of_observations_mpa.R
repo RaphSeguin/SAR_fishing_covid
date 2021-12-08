@@ -9,18 +9,17 @@
 
 number_of_observations_mpa = function(SAR_mpa_final, SAR_data_mpa_2017, SAR_data_mpa_2018, SAR_data_mpa_2019, SAR_data_mpa_2020){
   
-  levels(SAR_mpa_final$Status)
   
-  SAR_mpa_final$Status = factor(SAR_mpa_final$Status, levels=c("Inside_mpa","10km_mpa","30km_mpa"))
+  SAR_mpa_final$Status = factor(SAR_mpa_final$Status, levels=c("Inside_mpa","5km_mpa","10km_mpa"))
   
   #Number of observations per year
   (pYear = ggplot(SAR_mpa_final, aes(Year, fill = Status)) + 
      geom_bar(position = position_dodge()) +
-     scale_fill_viridis_d(labels = c("Inside MPA","10km around MPA", "30km around MPA")) +
+     scale_fill_viridis_d(labels = c("Inside MPA","5km around MPA", "10km around MPA")) +
      theme_minimal() + 
      labs(x = " ",
-          y = "Number of observations"),
-          fill = "")
+          y = "Number of observations",
+          fill = "Localization"))
   
   #Color palette for Year viridis
   group.colors = c("2017" = "#440154", "2018" = "#31688e","2019" = "#35b779", "2020" = "#fde725")
