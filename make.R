@@ -67,30 +67,30 @@ SAR_data_noRFI = filter_RFI(SAR_data_clean)
 #Delete Shipping routes
 SAR_data_final = filter_shipping(SAR_data_noRFI)
 
-#ADDING CYCLE PARAMETER IN OUR DATA
-SAR_data_final_plot = SAR_data_final %>%
-  distinct(Day, .keep_all = T) %>%
-  st_drop_geometry() %>%
-  arrange(Day)
-
-
-SAR_data_final_plot$Day = as.POSIXct(SAR_data_final_plot$Day, format = "%Y-%m-%d")
-SAR_data_final_plot$difftime = NA
-for(i in 1:nrow(SAR_data_final_plot)){
-  
-  SAR_data_final_plot$difftime[i] = abs(round(difftime(SAR_data_final_plot[1,55],SAR_data_final_plot[i,55], units = c("days"))))
-  
-}
-
-
-SAR_data_final_plot = SAR_data_final_plot %>%
-  mutate(cycle = as.factor(ifelse(difftime%%12 == 0, paste0(Day),NA))) %>%
-  dplyr::select(image_name, cycle, difftime)
-
-SAR_data_final = SAR_data_final %>%
-  left_join(SAR_data_final_plot, by = "image_name") %>%
-  arrange(Day) %>%
-  fill(cycle)
+# #Add cycle
+# SAR_data_final_plot = SAR_data_final %>%
+#   distinct(Day, .keep_all = T) %>%
+#   st_drop_geometry() %>%
+#   arrange(Day)
+# 
+# 
+# SAR_data_final_plot$Day = as.POSIXct(SAR_data_final_plot$Day, format = "%Y-%m-%d")
+# SAR_data_final_plot$difftime = NA
+# for(i in 1:nrow(SAR_data_final_plot)){
+#   
+#   SAR_data_final_plot$difftime[i] = abs(round(difftime(SAR_data_final_plot[1,55],SAR_data_final_plot[i,55], units = c("days"))))
+#   
+# }
+# 
+# 
+# SAR_data_final_plot = SAR_data_final_plot %>%
+#   mutate(cycle = as.factor(ifelse(difftime%%12 == 0, paste0(Day),NA))) %>%
+#   dplyr::select(image_name, cycle, difftime)
+# 
+# SAR_data_final = SAR_data_final %>%
+#   left_join(SAR_data_final_plot, by = "image_name") %>%
+#   arrange(Day) %>%
+#   fill(cycle)
   
 save(SAR_data_final, file = "output/SAR_data_final.Rdata")
 
@@ -101,6 +101,12 @@ sep_year(SAR_data_final)
 SAR_data_final_df = st_coordinates(SAR_data_final)
 SAR_data_final_df = cbind(SAR_data_final_df,SAR_data_final_df)
 save(SAR_data_final_df, file = "output/SAR_data_final_df.Rdata")
+
+#Sar Inside MPA
+SAR_mpa_final = SAR_inside_mpa(SAR_data_final)
+
+#Save one data set per year but for MPAs
+sep_year_mpa(SAR_mpa_final)
 
 #------Figures----------
 
@@ -116,47 +122,14 @@ data_list = lapply(files, load, .GlobalEnv)
 
 setwd(here())
 
-#Trying out some stuff for mpa data
-
-#Convert observations to sf object with same CRS as ZEE data
-SAR_data_final_mpa = SAR_data_final %>%
-  mutate(uniqueid = paste0(target_number,detecttime,Day,significance))%>%
-  distinct(uniqueid, .keep_all = T)
-
-#Keeping only IUCN MPA
-med_mpa_filter = med_mpa %>%
-  filter(IUCN_CA != "Not Applicable" & IUCN_CA != "Not Assigned" & IUCN_CA != "Not Reported")
-
-
-med_mpa_filter_10 = st_transform(med_mpa_filter, crs = 27700 ) %>% st_buffer(dist = 10000) %>% st_transform(crs = 4326)
-med_mpa_filter_30 = st_transform(med_mpa_filter, crs = 27700 ) %>% st_buffer(dist = 30000)%>% st_transform(crs = 4326)
-
-SAR_mpa_sf = st_as_sf(SAR_data_final_mpa, crs = st_crs(med_mpa),coords=c("lon","lat")) 
-
-#Intersection between our data and mpa, mpa buffers
-SAR_mpa = st_intersection(SAR_mpa_sf,med_mpa_filter)
-save(SAR_mpa, file = "output/SAR_mpa.Rdata")
-SAR_mpa_10 = st_intersection(SAR_mpa_sf,med_mpa_filter_10)
-save(SAR_mpa_10, file = "output/SAR_mpa_10.Rdata")
-SAR_mpa_30 = st_intersection(SAR_mpa_sf,med_mpa_filter_30)
-save(SAR_mpa_30, file = "output/SAR_mpa_30.Rdata")
-
-#Keeping only unique values to avoid duplicates, for instances points that are in overlapping mpas 
-SAR_mpa = SAR_mpa %>% distinct(uniqueid, .keep_all = T) %>% mutate(Status = "Inside_mpa")
-SAR_mpa_10 = SAR_mpa_10 %>% distinct(uniqueid, .keep_all = T) %>% filter(!uniqueid %in% SAR_mpa$uniqueid) %>% mutate(Status = "10km_mpa")
-SAR_mpa_30 = SAR_mpa_30 %>% distinct(uniqueid, .keep_all = T) %>% filter(!uniqueid %in% SAR_mpa$uniqueid) %>% filter(!uniqueid %in% SAR_mpa_10$uniqueid) %>%  mutate(Status = "30km_mpa")
-
-SAR_mpa_final = rbind(SAR_mpa,SAR_mpa_10,SAR_mpa_30) %>% mutate(Status = as.factor(Status))
-save(SAR_mpa_final, file = "output/SAR_mpa_final.Rdata")
-
-#Mapping the shit
+#Let's map this shit
 ggplot(map_background) +
   geom_sf(fill="white" ) +
-  geom_sf(data = med_mpa_filter,fill = "#E7E3AF", alpha = 0.7) + 
+  geom_sf(data = med_mpa_filter,fill = "#E7E3AF", alpha = 0.7, lwd = 0.3) + 
   # geom_sf(data = med_mpa_filter_10,fill = "#2380B3", alpha = 0.2, lwd = 0) +
   # geom_sf(data = med_mpa_filter_30,fill = "#41A6D9", alpha = 0.05, lwd = 0) + 
   geom_sf(data=SAR_mpa_final, aes(color = Status), size = 0.05, alpha = 0.5)+
-  scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9"), labels = c('Inside MPA', '10Km around MPA', '30Km around MPA')) +
+  scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9"), labels = c('10Km around MPA', '30Km around MPA', 'Inside MPA')) +
   theme(panel.background = element_rect(fill = "black"),panel.grid = element_line(color = "black", size = 0),
         panel.border = element_rect(colour = "black", fill=NA, size=1),legend.key=element_blank()) +
   guides(colour = guide_legend(override.aes = list(size=3))) +
@@ -167,7 +140,6 @@ ggplot(map_background) +
 ggsave("figures/obs_MPA.png",width = 297, height = 210, units = "mm")
 ggsave("figures/obs_MPA.pdf",width = 297, height = 210, units = "mm")
 
-
 #Figure of study area
 study_area(map_background, ZEE)
 
@@ -176,6 +148,9 @@ number_of_images(SAR_data_final)
 
 #Number of observations per year, per month and per day boxplot
 number_of_observations(SAR_data_final,SAR_data_2017,SAR_data_2018,SAR_data_2019,SAR_data_2020)
+
+#Number of observations per year, per month and per day boxplot for MPAs
+number_of_observations_mpa(SAR_data_final,SAR_data_2017,SAR_data_2018,SAR_data_2019,SAR_data_2020)
 
 #Number of images we lose due to shippinh
 shipping_plot(SAR_data_noRFI)
