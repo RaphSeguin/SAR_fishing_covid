@@ -71,59 +71,59 @@ number_of_observations_mpa = function(SAR_mpa_final, SAR_data_mpa_2017, SAR_data
       ylim(0,2000))
   
   
-  #Number of observations per days
-  (pDay_2017 = SAR_data_mpa_2017 %>%
-      group_by(Status) %>%
-      distinct(ObsDay, .keep_all = T) %>%
-      ggplot(aes(Month, ObsDay, fill = Status), position = position_dodge(width = 3)) +
-      geom_boxplot(alpha = 0.8) + 
-      scale_fill_manual(values = group.colors, labels = c("Inside MPA","5km around MPA", "10km around MPA")) +
-      theme_minimal()+
-      theme(axis.text.x = element_text(angle = 75, vjust = 0.5, hjust=0.5)) +
-      labs(x = " ",
-           y = "Number of observations per day",
-           title = '2017') +
-      ylim(0, 800))
-  
-  (pDay_2018 = SAR_data_mpa_2018 %>%
-      group_by(Status) %>%
-      distinct(ObsDay, .keep_all = T) %>%
-      ggplot(aes(Month, ObsDay, fill = Status), position = position_dodge(width = 3)) +
-      geom_boxplot(alpha = 0.8) + 
-      scale_fill_manual(values = group.colors, labels = c("Inside MPA","5km around MPA", "10km around MPA")) +
-      theme_minimal()+
-      theme(axis.text.x = element_text(angle = 75, vjust = 0.5, hjust=0.5)) +
-      labs(x = " ",
-           y = "Number of observations per day",
-           title = '2018') +
-      ylim(0, 800))
-  
-  (pDay_2019 =
-      SAR_data_mpa_2019 %>%
-      group_by(Status) %>%
-      distinct(ObsDay, .keep_all = T) %>%
-      ggplot(aes(Month, ObsDay, fill = Status), position = position_dodge(width = 3)) +
-      geom_boxplot(alpha = 0.8) + 
-      scale_fill_manual(values = group.colors, labels = c("Inside MPA","5km around MPA", "10km around MPA")) +
-      theme_minimal()+
-      theme(axis.text.x = element_text(angle = 75, vjust = 0.5, hjust=0.5)) +
-      labs(x = " ",
-           y = "Number of observations per day",
-           title = '2019') +
-      ylim(0, 800))
-  
-  (pDay_2020 = SAR_data_mpa_2020 %>%
-      group_by(Status) %>%
-      distinct(ObsDay, .keep_all = T) %>%
-      ggplot(aes(Month, ObsDay, fill = Status), position = position_dodge(width = 3)) +
-      geom_boxplot(alpha = 0.8) + 
-      scale_fill_manual(values = group.colors, labels = c("Inside MPA","5km around MPA", "10km around MPA")) +
-      theme_minimal()+
-      theme(axis.text.x = element_text(angle = 75, vjust = 0.5, hjust=0.5)) +
-      labs(x = " ",
-           y = "Number of observations per day",
-           title = '2020') +
-      ylim(0, 800))
+  # #Number of observations per days
+  # (pDay_2017 = SAR_data_mpa_2017 %>%
+  #     group_by(Status) %>%
+  #     distinct(ObsDay, .keep_all = T) %>%
+  #     ggplot(aes(Month, ObsDay, fill = Status), position = position_dodge(width = 3)) +
+  #     geom_boxplot(alpha = 0.8) + 
+  #     scale_fill_manual(values = group.colors, labels = c("Inside MPA","5km around MPA", "10km around MPA")) +
+  #     theme_minimal()+
+  #     theme(axis.text.x = element_text(angle = 75, vjust = 0.5, hjust=0.5)) +
+  #     labs(x = " ",
+  #          y = "Number of observations per day",
+  #          title = '2017') +
+  #     ylim(0, 800))
+  # 
+  # (pDay_2018 = SAR_data_mpa_2018 %>%
+  #     group_by(Status) %>%
+  #     distinct(ObsDay, .keep_all = T) %>%
+  #     ggplot(aes(Month, ObsDay, fill = Status), position = position_dodge(width = 3)) +
+  #     geom_boxplot(alpha = 0.8) + 
+  #     scale_fill_manual(values = group.colors, labels = c("Inside MPA","5km around MPA", "10km around MPA")) +
+  #     theme_minimal()+
+  #     theme(axis.text.x = element_text(angle = 75, vjust = 0.5, hjust=0.5)) +
+  #     labs(x = " ",
+  #          y = "Number of observations per day",
+  #          title = '2018') +
+  #     ylim(0, 800))
+  # 
+  # (pDay_2019 =
+  #     SAR_data_mpa_2019 %>%
+  #     group_by(Status) %>%
+  #     distinct(ObsDay, .keep_all = T) %>%
+  #     ggplot(aes(Month, ObsDay, fill = Status), position = position_dodge(width = 3)) +
+  #     geom_boxplot(alpha = 0.8) + 
+  #     scale_fill_manual(values = group.colors, labels = c("Inside MPA","5km around MPA", "10km around MPA")) +
+  #     theme_minimal()+
+  #     theme(axis.text.x = element_text(angle = 75, vjust = 0.5, hjust=0.5)) +
+  #     labs(x = " ",
+  #          y = "Number of observations per day",
+  #          title = '2019') +
+  #     ylim(0, 800))
+  # 
+  # (pDay_2020 = SAR_data_mpa_2020 %>%
+  #     group_by(Status) %>%
+  #     distinct(ObsDay, .keep_all = T) %>%
+  #     ggplot(aes(Month, ObsDay, fill = Status), position = position_dodge(width = 3)) +
+  #     geom_boxplot(alpha = 0.8) + 
+  #     scale_fill_manual(values = group.colors, labels = c("Inside MPA","5km around MPA", "10km around MPA")) +
+  #     theme_minimal()+
+  #     theme(axis.text.x = element_text(angle = 75, vjust = 0.5, hjust=0.5)) +
+  #     labs(x = " ",
+  #          y = "Number of observations per day",
+  #          title = '2020') +
+  #     ylim(0, 800))
   # 
   #Number of observations per cycle
   # (pDay_2017 = SAR_data_2017 %>%
@@ -182,9 +182,9 @@ number_of_observations_mpa = function(SAR_mpa_final, SAR_data_mpa_2017, SAR_data
   
   
   (month = ggarrange(pMonth_2017 + rremove("ylab"), pMonth_2018 + rremove("ylab"), pMonth_2019 + rremove("ylab"), pMonth_2020 + rremove("ylab"), nrow = 1, common.legend = T))
-  (day = ggarrange(pDay_2017 + rremove("ylab"), pDay_2018 + rremove("ylab"), pDay_2019 + rremove("ylab"), pDay_2020 + rremove("ylab"), nrow = 1, common.legend = T))
+  # (day = ggarrange(pDay_2017 + rremove("ylab"), pDay_2018 + rremove("ylab"), pDay_2019 + rremove("ylab"), pDay_2020 + rremove("ylab"), nrow = 1, common.legend = T))
   
-  figure = ggarrange(pYear + rremove("ylab"), month + rremove("xlab"), day, nrow = 3, heights = c(1,1,2), common.legend = T)
+  figure = ggarrange(pYear + rremove("ylab"), month + rremove("xlab"), nrow = 2, heights = c(1,2), common.legend = T)
   (figure = annotate_figure(figure, left = textGrob("Number of observations", rot = 90, vjust = 0.7, gp = gpar(cex = 1.3))))
   
   

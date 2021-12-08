@@ -510,6 +510,51 @@ min(data_2020_S$ObsDay)
 
 t.test(data_2018_S$ObsDay,data_2020_S$ObsDay)
 
+#MPAs
+levels(SAR_mpa_final$Status)
+
+SAR_data_mpa_2017_inside_LD = SAR_data_mpa_2017 %>% filter(Status == "Inside_mpa") %>% filter(Month %in% c("March","April","May"))
+SAR_data_mpa_2017_inside_PD = SAR_data_mpa_2017 %>% filter(Status == "Inside_mpa") %>% filter(Month %in% c("June"))
+SAR_data_mpa_2017_inside_S = SAR_data_mpa_2017 %>% filter(Status == "Inside_mpa") %>% filter(Month %in% c("July","August","September"))
+SAR_data_mpa_2017_5_LD = SAR_data_mpa_2017 %>% filter(Status == "5km_mpa") %>% filter(Month %in% c("March","April","May"))
+SAR_data_mpa_2017_5_PD = SAR_data_mpa_2017 %>% filter(Status == "5km_mpa") %>% filter(Month %in% c("June"))
+SAR_data_mpa_2017_5_S = SAR_data_mpa_2017 %>% filter(Status == "5km_mpa") %>% filter(Month %in% c("July","August","September"))
+SAR_data_mpa_2017_10_LD  = SAR_data_mpa_2017 %>% filter(Status == "10km_mpa") %>% filter(Month %in% c("March","April","May"))
+SAR_data_mpa_2017_10_PD  = SAR_data_mpa_2017 %>% filter(Status == "10km_mpa") %>% filter(Month %in% c("June"))
+SAR_data_mpa_2017_10_S  = SAR_data_mpa_2017 %>% filter(Status == "10km_mpa") %>% filter(Month %in% c("July","August","September"))
+
+SAR_data_mpa_2018_inside_LD = SAR_data_mpa_2018 %>% filter(Status == "Inside_mpa")  %>% filter(Month %in% c("March","April","May"))
+SAR_data_mpa_2018_inside_PD = SAR_data_mpa_2018 %>% filter(Status == "Inside_mpa") %>% filter(Month %in% c("June"))
+SAR_data_mpa_2018_inside_S = SAR_data_mpa_2018 %>% filter(Status == "Inside_mpa") %>% filter(Month %in% c("July","August","September"))
+SAR_data_mpa_2018_5_LD = SAR_data_mpa_2018 %>% filter(Status == "5km_mpa") %>% filter(Month %in% c("March","April","May"))
+SAR_data_mpa_2018_5_PD = SAR_data_mpa_2018 %>% filter(Status == "5km_mpa") %>% filter(Month %in% c("June"))
+SAR_data_mpa_2018_5_S = SAR_data_mpa_2018 %>% filter(Status == "5km_mpa") %>% filter(Month %in% c("July","August","September"))
+SAR_data_mpa_2018_10_LD  = SAR_data_mpa_2018 %>% filter(Status == "10km_mpa") %>% filter(Month %in% c("March","April","May"))
+SAR_data_mpa_2018_10_PD  = SAR_data_mpa_2018 %>% filter(Status == "10km_mpa") %>% filter(Month %in% c("June"))
+SAR_data_mpa_2018_10_S  = SAR_data_mpa_2018 %>% filter(Status == "10km_mpa") %>% filter(Month %in% c("July","August","September"))
+
+SAR_data_mpa_2019_inside_LD = SAR_data_mpa_2019 %>% filter(Status == "Inside_mpa") %>% filter(Month %in% c("March","April","May"))
+SAR_data_mpa_2019_inside_PD = SAR_data_mpa_2019 %>% filter(Status == "Inside_mpa") %>% filter(Month %in% c("June"))
+SAR_data_mpa_2019_inside_S = SAR_data_mpa_2019 %>% filter(Status == "Inside_mpa")%>% filter(Month %in% c("July","August","September"))
+SAR_data_mpa_2019_5_LD = SAR_data_mpa_2019 %>% filter(Status == "5km_mpa") %>% filter(Month %in% c("March","April","May"))
+SAR_data_mpa_2019_5_PD = SAR_data_mpa_2019 %>% filter(Status == "5km_mpa") %>% filter(Month %in% c("June"))
+SAR_data_mpa_2019_5_S = SAR_data_mpa_2019 %>% filter(Status == "5km_mpa")%>% filter(Month %in% c("July","August","September"))
+SAR_data_mpa_2019_10_LD  = SAR_data_mpa_2019 %>% filter(Status == "10km_mpa") %>% filter(Month %in% c("March","April","May"))
+SAR_data_mpa_2019_10_PD  = SAR_data_mpa_2019 %>% filter(Status == "10km_mpa") %>% filter(Month %in% c("June"))
+SAR_data_mpa_2019_10_S  = SAR_data_mpa_2019 %>% filter(Status == "10km_mpa") %>% filter(Month %in% c("July","August","September"))
+
+SAR_data_mpa_2020_inside_LD = SAR_data_mpa_2020 %>% filter(Status == "Inside_mpa") %>% filter(Month %in% c("March","April","May"))
+SAR_data_mpa_2020_inside_PD = SAR_data_mpa_2020 %>% filter(Status == "Inside_mpa") %>% filter(Month %in% c("June"))
+SAR_data_mpa_2020_inside_S = SAR_data_mpa_2020 %>% filter(Status == "Inside_mpa") %>% filter(Month %in% c("July","August","September"))
+SAR_data_mpa_2020_5_LD = SAR_data_mpa_2020 %>% filter(Status == "5km_mpa") %>% filter(Month %in% c("March","April","May"))
+SAR_data_mpa_2020_5_PD = SAR_data_mpa_2020 %>% filter(Status == "5km_mpa") %>% filter(Month %in% c("June"))
+SAR_data_mpa_2020_5_S = SAR_data_mpa_2020 %>% filter(Status == "5km_mpa") %>% filter(Month %in% c("July","August","September"))
+SAR_data_mpa_2020_10_LD  = SAR_data_mpa_2020 %>% filter(Status == "10km_mpa") %>% filter(Month %in% c("March","April","May"))
+SAR_data_mpa_2020_10_PD  = SAR_data_mpa_2020 %>% filter(Status == "10km_mpa") %>% filter(Month %in% c("June"))
+SAR_data_mpa_2020_10_S  = SAR_data_mpa_2020 %>% filter(Status == "10km_mpa")%>% filter(Month %in% c("July","August","September"))
+
+nrow(SAR_data_mpa_2020_10_S)
+
 
 # 
 # boats_filtered$detecttime = as.factor(boats_filtered$detecttime)
