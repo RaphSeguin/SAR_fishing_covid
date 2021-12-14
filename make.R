@@ -124,32 +124,32 @@ setwd(here())
 
 #PLOTTING DELTA FOR YEAR
 
-SAR_mean = rbind(SAR_data_2017,SAR_data_2018,SAR_data_2019) %>% group_by(Month) %>% mutate(monthmean = mean(ObsMonth)) %>% dplyr::select(Month, monthmean) %>% distinct(monthmean, .keep_all = T) %>% 
-  st_drop_geometry() 
+SAR_mean_year = rbind(SAR_data_2017,SAR_data_2018,SAR_data_2019) %>% group_by(Year) %>% summarize(total = n()) %>% ungroup() %>% st_drop_geometry()
 
-SAR_2020 = SAR_data_2020 %>% dplyr::select(Month, ObsMonth) %>% distinct(Month, .keep_all = T) %>% st_drop_geometry() %>% left_join(SAR_mean, by = "Month") %>% pivot_longer(cols =  c("ObsMonth","monthmean")) %>%
-  mutate(name = recode_factor(name, ObsMonth = "2020", monthmean = "2017:2019")) 
+SAR_mean_year_2020 = SAR_data_2020 %>% group_by(Year) %>% summarize(sum = n()) %>%ungroup() %>% st_drop_geometry()
 
-SAR_2020$name = ordered(SAR_2020$name, c("2017:2019","2020"))
+SAR_mean_year_plot = data.frame(Year = "2017-2019",sum = mean(SAR_mean_year$total))
+SAR_year_plot = rbind(SAR_mean_year_plot, SAR_mean_year_2020)
 
-(SAR_boxplot = ggplot(SAR_2020,aes(x = name, y = value, fill = name)) + 
-    scale_fill_viridis_d() +
-  geom_boxplot(alpha = 0.7)+
-    geom_point()+
-    theme_minimal() + 
-  ylim(0,6000) + 
-    labs (fill = "Year", 
-          x = "",
-          y = "Number of monthly observations"))
+delta_year = ggplot(SAR_year_plot,aes(Year,sum, fill = Year))+
+  geom_bar(stat='identity') +
+  scale_fill_viridis_d(option = "E") +
+  theme_minimal() +
+  labs (x = "",
+          y = "Total observations") +
+  ylim(0, 30000)
 
-ggsave(SAR_boxplot, file = "annualdelta.pdf", width = 297, height = 210, units = "mm")
+ggsave(delta_year, file = "figures/delta_year.pdf", width = 297, height = 210, units = "mm")
+
+
+
 
 #PLOT DELTA FOR MONTH
 
-# SAR_mean = rbind(SAR_morning_2017,SAR_morning_2018,SAR_morning_2019) %>% group_by(Month) %>% mutate(monthmean = mean(ObsMonth)) %>% dplyr::select(Month, monthmean) %>% distinct(monthmean, .keep_all = T) %>% 
-#   st_drop_geometry() %>%
-#   left_join(SAR_morning_2020, by = "Month") %>%
-#   mutate(diff = monthmean - ObsMonth) %>% distinct(diff, .keep_all = T)
+SAR_mean = rbind(SAR_data_2017,SAR_data_2018,SAR_data_2019) %>% group_by(Month) %>% mutate(monthmean = mean(ObsMonth)) %>% dplyr::select(Month, monthmean) %>% distinct(monthmean, .keep_all = T) %>%
+  st_drop_geometry() %>%
+  left_join(SAR_data_2020, by = "Month") %>%
+  mutate(diff = ObsMonth - monthmean) %>% distinct(diff, .keep_all = T)
 
 all = ggplot(SAR_mean, aes(Month,diff))+
   geom_bar(stat="identity", aes (fill = Month)) +
@@ -157,12 +157,13 @@ all = ggplot(SAR_mean, aes(Month,diff))+
   theme_minimal() +
   labs(x = "",
        y="",
-       size = "Delta")
+       size = "Delta")+
+  ylim(-1700, 500)
 
 SAR_mean_morning = rbind(SAR_morning_2017,SAR_morning_2018,SAR_morning_2019) %>% group_by(Month) %>% mutate(monthmean = mean(ObsMonth)) %>% dplyr::select(Month, monthmean) %>% distinct(monthmean, .keep_all = T) %>% 
   st_drop_geometry() %>%
   left_join(SAR_morning_2020, by = "Month") %>%
-  mutate(diff = monthmean - ObsMonth) %>% distinct(diff, .keep_all = T)
+  mutate(diff = ObsMonth - monthmean) %>% distinct(diff, .keep_all = T)
 
 morning = ggplot(SAR_mean_morning, aes(Month,diff))+
   geom_bar(stat="identity", aes (fill = Month)) +
@@ -173,12 +174,12 @@ morning = ggplot(SAR_mean_morning, aes(Month,diff))+
        size = "Delta",
        title = "Morning") +
   guides(fill = "none") +
-  ylim(-500, 900)
+  ylim(-1700, 500)
 
 SAR_mean_evening = rbind(SAR_evening_2017,SAR_evening_2018,SAR_evening_2019) %>% group_by(Month) %>% mutate(monthmean = mean(ObsMonth)) %>% dplyr::select(Month, monthmean) %>% distinct(monthmean, .keep_all = T) %>% 
   st_drop_geometry() %>%
   left_join(SAR_evening_2020, by = "Month") %>%
-  mutate(diff = monthmean - ObsMonth) %>% distinct(diff, .keep_all = T)
+  mutate(diff = ObsMonth - monthmean) %>% distinct(diff, .keep_all = T)
 
 evening = ggplot(SAR_mean_evening, aes(Month,diff))+
   geom_bar(stat="identity", aes (fill = Month)) +
@@ -188,13 +189,13 @@ evening = ggplot(SAR_mean_evening, aes(Month,diff))+
        y="",
        size = "Delta",
        title = 'Evening') +
-  guides(fill = "none") +
-  ylim(-500, 900)
+  guides(fill = "none")+
+  ylim(-1700, 500)
 
 
 morningevening = ggarrange(morning, evening, nrow = 1, common.legend = T)   
 figure = ggarrange(all, morningevening, nrow = 2, common.legend=T)
- (figure = annotate_figure(figure, left = textGrob("Difference between mean monthly observations in 2017-2019 and monthly observations in 2020", rot = 90, vjust = 0.9, gp = gpar(cex = 1))))
+ (figure = annotate_figure(figure, left = textGrob("Difference betweenmonthly observations in 2020 and mean monthly observations in 2017-2019", rot = 90, vjust = 0.9, gp = gpar(cex = 1))))
 ggsave(figure, file = "figures/delta_difference.pdf", width = 297, height = 210, units = "mm")
 
 
