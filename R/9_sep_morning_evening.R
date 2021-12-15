@@ -55,7 +55,7 @@ SAR_data_2018$Time = format(as.POSIXct(SAR_data_2018$detecttime), format = "%H:%
 SAR_evening_2018 = SAR_data_2018 %>% filter(Time > "12:00:00")%>% group_by(Month) %>%
   mutate(ObsMonth = n()) %>%
   ungroup()
-save(SAR_evening_2018, file = "output/SAR_evening_2018.RData")
+save(SAR_evening_2018, file = "output/SAR_evening_2018.Rdata")
 SAR_data_2019$Time = format(as.POSIXct(SAR_data_2019$detecttime), format = "%H:%M:%S")
 SAR_evening_2019 = SAR_data_2019 %>% filter(Time > "12:00:00")%>% group_by(Month) %>%
   mutate(ObsMonth = n()) %>%

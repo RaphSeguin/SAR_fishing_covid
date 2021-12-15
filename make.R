@@ -37,6 +37,7 @@ setwd(here())
 
 #Load SHP and stuff for maps
 map_background = st_read("maps/ShpMed_fromGADM.shp")
+land_map = st_read("maps/land_med.shp")
 med_mpa = st_read("maps/mpaMed.shp")
 
 #PLEASE DOWNLOAD THIS DATA SET FROM : 
@@ -66,47 +67,19 @@ SAR_data_noRFI = filter_RFI(SAR_data_clean)
 
 #Delete Shipping routes
 SAR_data_final = filter_shipping(SAR_data_noRFI)
-
-# #Add cycle
-# SAR_data_final_plot = SAR_data_final %>%
-#   distinct(Day, .keep_all = T) %>%
-#   st_drop_geometry() %>%
-#   arrange(Day)
-# 
-# 
-# SAR_data_final_plot$Day = as.POSIXct(SAR_data_final_plot$Day, format = "%Y-%m-%d")
-# SAR_data_final_plot$difftime = NA
-# for(i in 1:nrow(SAR_data_final_plot)){
-#   
-#   SAR_data_final_plot$difftime[i] = abs(round(difftime(SAR_data_final_plot[1,55],SAR_data_final_plot[i,55], units = c("days"))))
-#   
-# }
-# 
-# 
-# SAR_data_final_plot = SAR_data_final_plot %>%
-#   mutate(cycle = as.factor(ifelse(difftime%%12 == 0, paste0(Day),NA))) %>%
-#   dplyr::select(image_name, cycle, difftime)
-# 
-# SAR_data_final = SAR_data_final %>%
-#   left_join(SAR_data_final_plot, by = "image_name") %>%
-#   arrange(Day) %>%
-#   fill(cycle)
-  
 save(SAR_data_final, file = "output/SAR_data_final.Rdata")
 
 #Save one data set per year
 sep_year(SAR_data_final)
-
-#Data in data frame format
-SAR_data_final_df = st_coordinates(SAR_data_final)
-SAR_data_final_df = cbind(SAR_data_final_df,SAR_data_final_df)
-save(SAR_data_final_df, file = "output/SAR_data_final_df.Rdata")
 
 #Sar Inside MPA
 SAR_mpa_final = SAR_inside_mpa(SAR_data_final)
 
 #Save one data set per year but for MPAs
 sep_year_mpa(SAR_mpa_final)
+
+#Separate morning and evening
+sep_morning_evening(SAR_data_final, SAR_data_2017, SAR_data_2018,SAR_data_2019,SAR_data_2020)
 
 #------Figures----------
 
@@ -122,88 +95,9 @@ data_list = lapply(files, load, .GlobalEnv)
 
 setwd(here())
 
-#PLOTTING DELTA FOR YEAR
 
-SAR_mean_year = rbind(SAR_data_2017,SAR_data_2018,SAR_data_2019) %>% group_by(Year) %>% summarize(total = n()) %>% ungroup() %>% st_drop_geometry()
+#Comparison maps
 
-SAR_mean_year_2020 = SAR_data_2020 %>% group_by(Year) %>% summarize(sum = n()) %>%ungroup() %>% st_drop_geometry()
-
-SAR_mean_year_plot = data.frame(Year = "2017-2019",sum = mean(SAR_mean_year$total))
-SAR_year_plot = rbind(SAR_mean_year_plot, SAR_mean_year_2020)
-
-delta_year = ggplot(SAR_year_plot,aes(Year,sum, fill = Year))+
-  geom_bar(stat='identity') +
-  scale_fill_viridis_d(option = "E") +
-  theme_minimal() +
-  labs (x = "",
-          y = "Total observations") +
-  ylim(0, 30000)
-
-ggsave(delta_year, file = "figures/delta_year.pdf", width = 297, height = 210, units = "mm")
-
-
-
-
-#PLOT DELTA FOR MONTH
-
-SAR_mean = rbind(SAR_data_2017,SAR_data_2018,SAR_data_2019) %>% group_by(Month) %>% mutate(monthmean = mean(ObsMonth)) %>% dplyr::select(Month, monthmean) %>% distinct(monthmean, .keep_all = T) %>%
-  st_drop_geometry() %>%
-  left_join(SAR_data_2020, by = "Month") %>%
-  mutate(diff = ObsMonth - monthmean) %>% distinct(diff, .keep_all = T)
-
-all = ggplot(SAR_mean, aes(Month,diff))+
-  geom_bar(stat="identity", aes (fill = Month)) +
-  scale_fill_viridis_d() +
-  theme_minimal() +
-  labs(x = "",
-       y="",
-       size = "Delta")+
-  ylim(-1700, 500)
-
-SAR_mean_morning = rbind(SAR_morning_2017,SAR_morning_2018,SAR_morning_2019) %>% group_by(Month) %>% mutate(monthmean = mean(ObsMonth)) %>% dplyr::select(Month, monthmean) %>% distinct(monthmean, .keep_all = T) %>% 
-  st_drop_geometry() %>%
-  left_join(SAR_morning_2020, by = "Month") %>%
-  mutate(diff = ObsMonth - monthmean) %>% distinct(diff, .keep_all = T)
-
-morning = ggplot(SAR_mean_morning, aes(Month,diff))+
-  geom_bar(stat="identity", aes (fill = Month)) +
-  scale_fill_viridis_d() +
-  theme_minimal() +
-  labs(x = "",
-       y="",
-       size = "Delta",
-       title = "Morning") +
-  guides(fill = "none") +
-  ylim(-1700, 500)
-
-SAR_mean_evening = rbind(SAR_evening_2017,SAR_evening_2018,SAR_evening_2019) %>% group_by(Month) %>% mutate(monthmean = mean(ObsMonth)) %>% dplyr::select(Month, monthmean) %>% distinct(monthmean, .keep_all = T) %>% 
-  st_drop_geometry() %>%
-  left_join(SAR_evening_2020, by = "Month") %>%
-  mutate(diff = ObsMonth - monthmean) %>% distinct(diff, .keep_all = T)
-
-evening = ggplot(SAR_mean_evening, aes(Month,diff))+
-  geom_bar(stat="identity", aes (fill = Month)) +
-  scale_fill_viridis_d() +
-  theme_minimal() +
-  labs(x = "",
-       y="",
-       size = "Delta",
-       title = 'Evening') +
-  guides(fill = "none")+
-  ylim(-1700, 500)
-
-
-morningevening = ggarrange(morning, evening, nrow = 1, common.legend = T)   
-figure = ggarrange(all, morningevening, nrow = 2, common.legend=T)
- (figure = annotate_figure(figure, left = textGrob("Difference betweenmonthly observations in 2020 and mean monthly observations in 2017-2019", rot = 90, vjust = 0.9, gp = gpar(cex = 1))))
-ggsave(figure, file = "figures/delta_difference.pdf", width = 297, height = 210, units = "mm")
-
-
-
-
-
-hist(SAR_mean$diff)
-ggsave(file = "figures/delta_month.pdf", width = 297, height = 210, units = "mm")
 
 #Let's map this shit
 ggplot(map_background) +
@@ -241,8 +135,29 @@ shipping_plot(SAR_data_noRFI)
 #Example of RFI images
 RFI_plot(SAR_data_clean)
 
+#Delta year
+plot_delta_year(SAR_data_2017, SAR_data_2018, SAR_data_2019, SAR_data_2020)
+
+#Delta month
+plot_delta_month(SAR_data_2017, SAR_data_2018, SAR_data_2019, SAR_data_2020, 
+                 SAR_morning_2017, SAR_morning_2018,SAR_morning_2019,SAR_morning_2020,
+                 SAR_evening_2017, SAR_evening_2018, SAR_evening_2019, SAR_evening_2020)
+
+#Plot
+density_maps_summer(SAR_data_2017, SAR_data_2018, SAR_data_2019, SAR_data_2020,  
+                    SAR_morning_2017, SAR_morning_2018,SAR_morning_2019,SAR_morning_2020,
+                     SAR_evening_2017, SAR_evening_2018, SAR_evening_2019, SAR_evening_2020)
+
+density_maps_lockdown(SAR_data_2017, SAR_data_2018, SAR_data_2019, SAR_data_2020,  
+                    SAR_morning_2017, SAR_morning_2018,SAR_morning_2019,SAR_morning_2020,
+                    SAR_evening_2017, SAR_evening_2018, SAR_evening_2019, SAR_evening_2020)
+
+
+
+
+
 #MEAN PER YEAR
-plot_year = data_final %>%
+plot_year = SAR_dat %>%
   group_by(Year) %>%
   mutate(ObsYear = n())
 
@@ -261,12 +176,12 @@ plot_month = data_final %>%
   group_by(Year,Month)%>%
   mutate(MeanDay = mean(ObsDay))
 
-meanperday = ggplot(plot_month)+
+(meanperday = ggplot(plot_month)+
   geom_point(aes(x=Month,y=MeanDay,color=Year),size=4)+
   theme_minimal()+
   scale_color_viridis_d()+
   ylim(0,500)+
-  labs(y = "Mean observations per day")
+  labs(y = "Mean observations per day"))
 
 ggsave(meanperday, file='figures/meanperday.pdf',width = 20, height = 15) 
 ggsave(meanperday, file='figures/meanperday.png',width = 20, height = 15) 
@@ -293,89 +208,8 @@ ggsave(meanpermonth, file='figures/meanpermonth.png',width = 20, height = 15)
 st_crs(map_background) == st_crs(data_2017)
 
 
-#Data in data frame format
-SAR_df = st_coordinates(data_2017)
-SAR_df = cbind(data_2017,SAR_df) %>% st_drop_geometry()
-
-ggplot(map_background) +
-  geom_sf(fill="white" ) +
-  geom_density2d(data = SAR_df, aes(x = X, y = Y)) +
-  stat_density2d(data = SAR_df, aes(x = X, y = Y, fill = ..level.., alpha = ..level..),
-                 size = 0.01, bins = 20, geom = 'polygon') +
-  geom_point(data = SAR_df, aes(x=  X, y = Y), color = "darkred", alpha = 0.7, size = 1, shape = ".")+
-  scale_fill_distiller(palette=4, direction=-1) +
-  scale_alpha(range = c(0.00, 0.3), guide = FALSE) +
-  theme(panel.background = element_rect(fill = "black"),panel.grid = element_line(color = "black", size = 0),
-        panel.border = element_rect(colour = "#FEEFDB", fill=NA, size=1),legend.position = "none", axis.title = element_blank(), text = element_text(size = 12)) +
-  xlim(2,11) +
-  ylim(41,44)+
-  labs(title = "2017")
-
-ggsave("figures/density_2017.png", width = 297, height = 210, units = "mm")
-
-#Data in data frame format
-SAR_df = st_coordinates(data_2018)
-SAR_df = cbind(data_2018,SAR_df) %>% st_drop_geometry()
-
-ggplot(map_background) +
-  geom_sf(fill="white" ) +
-  geom_density2d(data = SAR_df, aes(x = X, y = Y)) +
-  stat_density2d(data = SAR_df, aes(x = X, y = Y, fill = ..level.., alpha = ..level..),
-                 size = 0.01, bins = 20, geom = 'polygon') +
-  geom_point(data = SAR_df, aes(x=  X, y = Y), color = "darkred", alpha = 0.7, size = 1, shape = ".")+
-  scale_fill_distiller(palette=4, direction=-1) +
-  scale_alpha(range = c(0.00, 0.3), guide = FALSE) +
-  theme(panel.background = element_rect(fill = "black"),panel.grid = element_line(color = "black", size = 0),
-        panel.border = element_rect(colour = "#FEEFDB", fill=NA, size=1),legend.position = "none", axis.title = element_blank(), text = element_text(size = 12)) +
-  xlim(2,11) +
-  ylim(41,44)+
-  labs(title = "2018")
-
-ggsave("figures/density_2018.png", width = 297, height = 210, units = "mm")
-
-#Data in data frame format
-SAR_df = st_coordinates(data_2019)
-SAR_df = cbind(data_2019,SAR_df) %>% st_drop_geometry()
-
-ggplot(map_background) +
-  geom_sf(fill="white" ) +
-  geom_density2d(data = SAR_df, aes(x = X, y = Y)) +
-  stat_density2d(data = SAR_df, aes(x = X, y = Y, fill = ..level.., alpha = ..level..),
-                 size = 0.01, bins = 20, geom = 'polygon') +
-  geom_point(data = SAR_df, aes(x=  X, y = Y), color = "darkred", alpha = 0.7, size = 1, shape = ".")+
-  scale_fill_distiller(palette=4, direction=-1) +
-  scale_alpha(range = c(0.00, 0.3), guide = FALSE) +
-  theme(panel.background = element_rect(fill = "black"),panel.grid = element_line(color = "black", size = 0),
-        panel.border = element_rect(colour = "#FEEFDB", fill=NA, size=1),legend.position = "none", axis.title = element_blank(), text = element_text(size = 12)) +
-  xlim(2,11) +
-  ylim(41,44)+
-  labs(title = "2019")
-
-ggsave("figures/density_2019.png", width = 297, height = 210, units = "mm")
-
-
-#Data in data frame format
-SAR_df = st_coordinates(data_2020)
-SAR_df = cbind(data_2020,SAR_df) %>% st_drop_geometry()
-
-ggplot(map_background) +
-  geom_sf(fill="white" ) +
-  geom_density2d(data = SAR_df, aes(x = X, y = Y)) +
-  stat_density2d(data = SAR_df, aes(x = X, y = Y, fill = ..level.., alpha = ..level..),
-                 size = 0.01, bins = 20, geom = 'polygon') +
-  geom_point(data = SAR_df, aes(x=  X, y = Y), color = "darkred", alpha = 0.7, size = 1, shape = ".")+
-  scale_fill_distiller(palette=4, direction=-1) +
-  scale_alpha(range = c(0.00, 0.3), guide = FALSE) +
-  theme(panel.background = element_rect(fill = "black"),panel.grid = element_line(color = "black", size = 0),
-        panel.border = element_rect(colour = "#FEEFDB", fill=NA, size=1),legend.position = "none", axis.title = element_blank(), text = element_text(size = 12)) +
-  xlim(2,11) +
-  ylim(41,44) +
-  labs(title = "2020")
-
-ggsave("figures/density_2020.png", width = 297, height = 210, units = "mm")
-
-
-
+all_maps = ggarrange(Morning_density, Evening_density, Morning_2020_density, Evening_2020_density, nrow = 2 , ncol = 2, common.legend = T, legend = 'bottom')
+ggsave(all_maps, file = "figures/all_maps.pdf", width = 297, height = 210, units = "mm")
 
 
 mclapply(unique(data_2017$Month),function(i){
