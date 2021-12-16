@@ -25,7 +25,7 @@ density_delta = function(SAR_data_2017, SAR_data_2018, SAR_data_2019, SAR_data_2
   SAR_2020_plot = SAR_data_2020 %>%  filter(Month %in% c("April","May","June")) %>% cbind(SAR_2020_density) %>% st_drop_geometry()
   
   #Calculating density for 2017/2019 data
-  SAR_plot_density = kde2d(SAR_plot$X,SAR_plot$Y,n=100)
+  SAR_plot_density = kde2d(SAR_plot$X,SAR_plot$Y,n=300)
   raster1 = raster(SAR_plot_density)
   
   #Calculating density for 2020 data
@@ -39,16 +39,25 @@ density_delta = function(SAR_data_2017, SAR_data_2018, SAR_data_2019, SAR_data_2
                            raster2,
                            fun=function(r1, r2){return(r2-r1)})
   
-  #Convert to usable data
+  crs(raster_overlay)
+# 
+#   Convert to usable data
   lockdown_2020 <- as(raster_overlay, "SpatialPixelsDataFrame")
   lockdown_2020 <- as.data.frame(lockdown_2020)
   colnames(lockdown_2020) <- c("value", "x", "y")
   
+  xy <- lockdown_2020[,c(2,3)]
+  
+  spdf = SpatialPointsDataFrame(coords = xy, data = lockdown_2020, proj4string = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
+  
+  krig = autoKrige(value~1, data = spdf, new_data=fit_points)
+  
+  
   #plotting density difference
   lockdown_delta = ggplot() + 
-    geom_tile(data=lockdown_2020, aes(x=x, y=y, fill=value)) + 
+    geom_tile(data=lockdown_2020, aes(x=x, y=y, fill=value)) +
     geom_sf(data = land_map, fill = "darkgrey", color = "black", size = 0.05) +
-    scale_fill_gradient2(low = "#343D98", mid = "white", high = "#AC0A27", limits = c(-0.7,0.3),
+    scale_fill_gradient2(low = "#1B3B5B", mid = "white", high = "#AC0A27", limits = c(-0.7,0.3),
                          breaks = c(-0.7,-0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2,0.3),
                          name = "Density difference 2020 - 2017/2019",
                          guide = guide_colorbar(

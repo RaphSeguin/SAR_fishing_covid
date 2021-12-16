@@ -10,7 +10,7 @@
 
 #-----------------Loading packages-------------------
 
-pkgs <- c("tidyverse","here","lme4","broom","tidymodels","parallel","cowplot","sf","RColorBrewer","ggridges","plotly","heatmaply","parsedate","birk","ggthemes","MASS",
+pkgs <- c("tidyverse","here","lme4","broom","tidymodels","parallel","cowplot","sf","RColorBrewer","ggridges","plotly","heatmaply","parsedate","birk","ggthemes","MASS","automap",
           "harrypotter","wesanderson","ranger","ggpubr","data.table","xml2","XML","rnaturalearth","ggExtra","raster","exactextractr","gstat","magrittr","scales","grid","gridExtra")
 nip <- pkgs[!(pkgs %in% installed.packages())]
 nip <- lapply(nip, install.packages, dependencies = TRUE)
@@ -59,8 +59,8 @@ SAR_data_ZEE = ZEE_intersection(data_SAR,ZEE)
 #Cleaning up data
 SAR_data_clean = data_clean(SAR_data_ZEE)
 
-#Plot every image we have to check for images with radio frequency interfences
-plot_all_images(SAR_data_clean)
+# #Plot every image we have to check for images with radio frequency interfences
+# plot_all_images(SAR_data_clean)
 
 #Filter out select RFI images
 SAR_data_noRFI = filter_RFI(SAR_data_clean)
