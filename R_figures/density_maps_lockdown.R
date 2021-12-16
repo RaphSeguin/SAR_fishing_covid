@@ -18,7 +18,7 @@ density_maps_lockdown = function(SAR_data_2017, SAR_data_2018, SAR_data_2019, SA
   #Data in data frame format
   SAR_density = rbind(SAR_data_2017,SAR_data_2018,SAR_data_2019) %>% filter(Month %in% c("April","May","June")) %>% st_coordinates()
   SAR_plot = rbind(SAR_data_2017,SAR_data_2018,SAR_data_2019)%>% filter(Month %in% c("April","May","June")) %>% cbind(SAR_density) %>% st_drop_geometry()
-
+  
   
   Density_20172019_lockdown = ggplot() +
     geom_density2d(data = SAR_plot, aes(x = X, y = Y), bins = 20, size = 0.1, col = "black") +

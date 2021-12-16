@@ -18,8 +18,6 @@ SAR_mean = rbind(SAR_data_2017,SAR_data_2018,SAR_data_2019) %>% group_by(Month) 
   left_join(SAR_data_2020, by = "Month") %>%
   mutate(diff = ObsMonth - monthmean) %>% distinct(diff, .keep_all = T)
 
-
-
 all = ggplot(SAR_mean, aes(Month,diff))+
   geom_bar(stat="identity", aes (fill = Month)) +
   scale_fill_viridis_d() +
