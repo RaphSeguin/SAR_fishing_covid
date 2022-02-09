@@ -35,6 +35,8 @@ number_of_images = function(SAR_data_final,SAR_data_2017,SAR_data_2018,SAR_data_
     theme(strip.text.x = element_blank())+
     ylim(0,80))
   
+  max(SAR_data_final$ImgMonth)
+  
   figure = ggarrange(images_year + rremove("ylab") + rremove("xlab"), images_month + rremove("ylab") + rremove("xlab"), nrow = 2, common.legend = T)
   figure = annotate_figure(figure, left = textGrob("Number of images", rot = 90, vjust = 1, gp = gpar(cex = 1.3)))
   

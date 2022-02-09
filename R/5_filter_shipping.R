@@ -18,11 +18,11 @@ filter_shipping = function(SAR_data_noRFI){
   
   SAR_data_final = cbind(SAR_data_noRFI, raster_sf) %>% filter(shipping < 10)
   
-  
-  SAR_data_final = SAR_data_final %>%
-    filter(ObsImg < quantile(SAR_data_noRFI$ObsImg,0.99))
-
-  
+  # 
+  # SAR_data_final = SAR_data_final %>%
+  #   filter(ObsImg < quantile(SAR_data_noRFI$ObsImg,0.99))
+  # 
+  # 
   return(SAR_data_final)
   
   

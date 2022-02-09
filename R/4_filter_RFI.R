@@ -48,6 +48,8 @@ filter_RFI = function(SAR_data_clean){
                 "S1B_IW_GRDH_1SDV_20191120T172151_20191120T172216_019014_023E18_A36C.SAFE",
                 "S1B_IW_GRDH_1SDV_20201113T053548_20201113T053613_024242_02E16C_A864.SAFE")
   
+  length(RFI_images)
+  
   SAR_data_clean$image_name = as.character(SAR_data_clean$image_name)
   RFI_images = as.character(RFI_images)
   

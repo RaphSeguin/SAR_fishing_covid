@@ -30,7 +30,7 @@ shipping_plot = function(SAR_data_noRFI){
   ggplot(output, aes(num_ships,obs)) +
     geom_point()+
     theme_minimal()+
-    labs(x = "Density of ships per pixel chosen at threshold",
+    labs(x = "Density of ships per pixel chosen",
          y = "Number of observations left after filtering out shipping routes")+
     geom_vline(xintercept = 10)
   

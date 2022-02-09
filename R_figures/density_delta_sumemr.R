@@ -43,12 +43,15 @@ summer_2020 <- as(raster_overlay, "SpatialPixelsDataFrame")
 summer_2020 <- as.data.frame(summer_2020)
 colnames(summer_2020) <- c("value", "x", "y")
 
+range(summer_2020$value)
+
+
 #plotting density difference
 summer_delta = ggplot() + 
   geom_tile(data=summer_2020, aes(x=x, y=y, fill=value)) + 
-  geom_sf(data = land_map, fill = "darkgrey", color = "black", size = 0.05) +
-  scale_fill_gradient2(low = "#343D98", mid = "white", high = "#AC0A27", limits = c(-0.7,0.3),
-                       breaks = c(-0.7,-0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2,0.3),
+  geom_sf(data = land_map, fill = "#1B3B5B", color = "black", size = 0.05) +
+  scale_fill_gradient2(low = "#1B3B5B", mid = "white", high = "#AC0A27", limits = c(-0.6,0.1),
+                       breaks = c(-0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1),
                        name = "Density difference 2020 - 2017/2019",
                        guide = guide_colorbar(
                          direction = "horizontal",
@@ -113,8 +116,8 @@ range(summer_2020_morning$value)
 summer_delta_morning = ggplot() + 
   geom_tile(data=summer_2020_morning, aes(x=x, y=y, fill=value)) + 
   geom_sf(data = land_map, fill = "darkgrey", color = "black", size = 0.05) +
-  scale_fill_gradient2(low = "#343D98", mid = "white", high = "#AC0A27", limits = c(-0.7,0.3),
-                       breaks = c(-0.7,-0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2,0.3),
+  scale_fill_gradient2(low = "#1B3B5B", mid = "white", high = "#AC0A27", limits = c(-0.3,0.1),
+                       breaks = c(-0.3, -0.2, -0.1, 0, 0.1),
                        name = "Density difference 2020 - 2017/2019",
                        guide = guide_colorbar(
                          direction = "horizontal",
@@ -172,14 +175,14 @@ summer_2020_evening <- as(raster_overlay_evening, "SpatialPixelsDataFrame")
 summer_2020_evening <- as.data.frame(summer_2020_evening)
 colnames(summer_2020_evening) <- c("value", "x", "y")
 
-range(summer_2020_evening$x)
+range(summer_2020_evening$value)
 
 #plotting density difference
 summer_delta_evening = ggplot() + 
   geom_tile(data=summer_2020_evening, aes(x=x, y=y, fill=value)) + 
   geom_sf(data = land_map, fill = "darkgrey", color = "black", size = 0.05) +
-  scale_fill_gradient2(low = "#343D98", mid = "white", high = "#AC0A27", limits = c(-0.7,0.3),
-                       breaks = c(-0.7,-0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2,0.3),
+  scale_fill_gradient2(low = "#1B3B5B", mid = "white", high = "#AC0A27", limits = c(-0.7,0.1),
+                       breaks = c(-0.7,-0.6, -0.5, -0.4, -0.3, -0.2, -0.1),
                        name = "Density difference 2020 - 2017/2019",
                        guide = guide_colorbar(
                          direction = "horizontal",

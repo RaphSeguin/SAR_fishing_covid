@@ -25,7 +25,7 @@ all = ggplot(SAR_mean, aes(Month,diff))+
   labs(x = "",
        y="",
        size = "Delta")+
-  ylim(-1700, 500)
+  ylim(-1700, 800)
 
 SAR_mean_morning = rbind(SAR_morning_2017,SAR_morning_2018,SAR_morning_2019) %>% group_by(Month) %>% mutate(monthmean = mean(ObsMonth)) %>% dplyr::select(Month, monthmean) %>% distinct(monthmean, .keep_all = T) %>% 
   st_drop_geometry() %>%
@@ -41,7 +41,7 @@ morning = ggplot(SAR_mean_morning, aes(Month,diff))+
        size = "Delta",
        title = "Morning") +
   guides(fill = "none") +
-  ylim(-1700, 500)
+  ylim(-1700, 800)
 
 SAR_mean_evening = rbind(SAR_evening_2017,SAR_evening_2018,SAR_evening_2019) %>% group_by(Month) %>% mutate(monthmean = mean(ObsMonth)) %>% dplyr::select(Month, monthmean) %>% distinct(monthmean, .keep_all = T) %>% 
   st_drop_geometry() %>%
@@ -57,7 +57,7 @@ evening = ggplot(SAR_mean_evening, aes(Month,diff))+
        size = "Delta",
        title = 'Evening') +
   guides(fill = "none")+
-  ylim(-1700, 500)
+  ylim(-1700, 800)
 
 
 morningevening = ggarrange(morning, evening, nrow = 1, common.legend = T)   

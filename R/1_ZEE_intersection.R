@@ -19,7 +19,7 @@ ZEE_intersection = function(SAR_data,ZEE_data){
     ungroup()
   
   SAR_dataa_nooutliers =  filter(SAR_data, ObsImg < quantile(SAR_data$ObsImg,0.95))
-  
+
   #Convert observations to sf object with same CRS as ZEE data
   SAR_data_sf = st_as_sf(SAR_dataa_nooutliers, crs = st_crs(ZEE_data),coords=c("lon","lat")) 
   

@@ -50,7 +50,7 @@ density_delta = function(SAR_data_2017, SAR_data_2018, SAR_data_2019, SAR_data_2
   
   spdf = SpatialPointsDataFrame(coords = xy, data = lockdown_2020, proj4string = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
   
-  krig = autoKrige(value~1, data = spdf, new_data=fit_points)
+  krig = autoKrige(value~1, input_data = spdf)
   
   
   #plotting density difference
@@ -117,12 +117,14 @@ density_delta = function(SAR_data_2017, SAR_data_2018, SAR_data_2019, SAR_data_2
   lockdown_2020_morning <- as.data.frame(lockdown_2020_morning)
   colnames(lockdown_2020_morning) <- c("value", "x", "y")
   
+  max(lockdown_2020_morning$value)
+  
   #plotting density difference
   lockdown_delta_morning = ggplot() + 
     geom_tile(data=lockdown_2020_morning, aes(x=x, y=y, fill=value)) + 
     geom_sf(data = land_map, fill = "darkgrey", color = "black", size = 0.05) +
-    scale_fill_gradient2(low = "#343D98", mid = "white", high = "#AC0A27", limits = c(-0.7,0.3),
-                         breaks = c(-0.7,-0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2,0.3),
+    scale_fill_gradient2(low = "#1B3B5B", mid = "white", high = "#AC0A27", limits = c(-0.3,0.1),
+                         breaks = c(-0.3, -0.2, -0.1, 0, 0.1),
                          name = "Density difference 2020 - 2017/2019",
                          guide = guide_colorbar(
                            direction = "horizontal",
@@ -179,13 +181,13 @@ density_delta = function(SAR_data_2017, SAR_data_2018, SAR_data_2019, SAR_data_2
   lockdown_2020_evening <- as.data.frame(lockdown_2020_evening)
   colnames(lockdown_2020_evening) <- c("value", "x", "y")
   
-  range(lockdown_2020_evening$y)
+  range(lockdown_2020_evening$value)
   
   #plotting density difference
   lockdown_delta_evening = ggplot() + 
     geom_tile(data=lockdown_2020_evening, aes(x=x, y=y, fill=value)) + 
     geom_sf(data = land_map, fill = "darkgrey", color = "black", size = 0.05) +
-    scale_fill_gradient2(low = "#343D98", mid = "white", high = "#AC0A27", limits = c(-0.7,0.3),
+    scale_fill_gradient2(low = "#1B3B5B", mid = "white", high = "#AC0A27", limits = c(-0.7,0.3),
                          breaks = c(-0.7,-0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2,0.3),
                          name = "Density difference 2020 - 2017/2019",
                          guide = guide_colorbar(
