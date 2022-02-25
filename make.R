@@ -278,7 +278,7 @@ SAR_2018_lockdown = SAR_data_2018 %>% filter(Month %in% c("March","April","May")
 SAR_2019_lockdown = SAR_data_2019 %>% filter(Month %in% c("March","April","May"))
 SAR_2020_lockdown = SAR_data_2020 %>% filter(Month %in% c("March","April","May"))
 
-nrow(SAR_2020_lockdown)
+mean(SAR_2020_lockdown$ObsDay)
 
 5626/mean(6723, 5966, 5944)
 

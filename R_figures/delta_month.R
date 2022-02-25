@@ -62,7 +62,7 @@ evening = ggplot(SAR_mean_evening, aes(Month,diff))+
 
 morningevening = ggarrange(morning, evening, nrow = 1, common.legend = T)   
 figure = ggarrange(all, morningevening, nrow = 2, common.legend=T)
-(figure = annotate_figure(figure, left = textGrob("Difference betweenmonthly observations in 2020 and mean monthly observations in 2017-2019", rot = 90, vjust = 0.9, gp = gpar(cex = 1))))
+(figure = annotate_figure(figure, left = textGrob("Difference between monthly observations in 2020 and mean monthly observations in 2017-2019", rot = 90, vjust = 0.9, gp = gpar(cex = 1))))
 ggsave(figure, file = "figures/delta_difference.pdf", width = 297, height = 210, units = "mm")
 
 }
